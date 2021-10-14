@@ -1,0 +1,10 @@
+<h1>Create a room</h1>
+<%= form_for :room, Routes.room_path(@conn, :create), fn f -> %>
+  <%= unless @user do %>
+    <%= text_input f, :name, placeholder: "Name", 
+        class: "form-control bg-dark text-white", autocomplete: "off" %>
+  <% end %>
+  <p class="lead mt-3">
+    <%= submit "+", class: "btn btn-lg btn-secondary fw-bold border-white bg-white" %>
+  </p>
+<% end %>
