@@ -22,10 +22,12 @@ defmodule PokexWeb.Router do
     pipe_through :browser
 
     get "/", RoomController, :index
+    get "/rooms", RoomController, :show
     post "/", RoomController, :create
     get "/logout", RoomController, :log_out
     get "/join/room/:id", RoomController, :join_room
     post "/join/room/:id", RoomController, :join_room_create
+    delete "/rooms/:id", RoomController, :delete
 
     live "/room/live/:id", RoomLive
   end

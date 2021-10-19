@@ -7,6 +7,15 @@ defmodule PokexWeb.RoomController do
     render(conn, "index.html", user: get_session(conn, "user"))
   end
 
+  def show(conn, _params) do
+    if get_session(conn, "user") do
+      user = get_session(conn, "user")
+      render(conn, "rooms.html", user: user)
+    else
+      redirect(conn, to: Routes.room_path(conn, :index))
+    end
+  end
+
   @spec create(Plug.Conn.t(), any) :: Plug.Conn.t()
   def create(conn, %{"room" => %{"name" => name}}) do
     room_id = UUID.uuid4()
@@ -67,6 +76,16 @@ defmodule PokexWeb.RoomController do
     conn
     |> put_session("user", user)
     |> redirect(to: "/room/live/#{room_id}")
+  end
+
+  def delete(conn, %{"id" => room_id}) do
+    new_user =
+      get_session(conn, "user")
+      |> Map.update!(:rooms, &Map.delete(&1, room_id))
+
+    conn
+    |> put_session("user", new_user)
+    |> redirect(to: Routes.room_path(conn, :show))
   end
 
   defp add_room_to_user(conn, room_id, owner) do

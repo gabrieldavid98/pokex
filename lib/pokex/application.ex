@@ -13,7 +13,8 @@ defmodule Pokex.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: Pokex.PubSub},
       # Start the Endpoint (http/https)
-      PokexWeb.Endpoint
+      PokexWeb.Endpoint,
+      PokexWeb.Presence,
       # Start a worker by calling: Pokex.Worker.start_link(arg)
       # {Pokex.Worker, arg}
     ]
