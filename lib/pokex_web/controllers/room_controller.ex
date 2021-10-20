@@ -24,7 +24,7 @@ defmodule PokexWeb.RoomController do
       name: name,
       rooms: %{room_id => %{
         owner: true,
-        share_link: Routes.room_url(conn, :join_room, room_id)
+        share_link: Routes.room_path(conn, :join_room, room_id)
       }},
     }
 
@@ -69,7 +69,7 @@ defmodule PokexWeb.RoomController do
       name: name,
       rooms: %{room_id => %{
         owner: false,
-        share_link: Routes.room_url(conn, :join_room, room_id)
+        share_link: Routes.room_path(conn, :join_room, room_id)
       }},
     }
 
@@ -94,7 +94,7 @@ defmodule PokexWeb.RoomController do
         :rooms,
         &Map.put(&1, room_id, %{
           owner: owner,
-          share_link: Routes.room_url(conn, :join_room, room_id)
+          share_link: Routes.room_path(conn, :join_room, room_id)
         })
       )
   end
