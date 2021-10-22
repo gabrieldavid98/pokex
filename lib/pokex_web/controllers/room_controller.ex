@@ -18,19 +18,30 @@ defmodule PokexWeb.RoomController do
 
   @spec create(Plug.Conn.t(), any) :: Plug.Conn.t()
   def create(conn, %{"room" => %{"name" => name}}) do
-    room_id = UUID.uuid4()
-    user = %{
-      id: UUID.uuid4(),
-      name: name,
-      rooms: %{room_id => %{
-        owner: true,
-        share_link: Routes.room_path(conn, :join_room, room_id)
-      }},
-    }
+    case String.length(name) do
+      0 ->
+        conn
+        |> put_flash(:error, "Name cannot be empty")
+        |> render("index.html", user: get_session(conn, "user"))
+      2 ->
+        conn
+        |> put_flash(:error, "Name cannot have less than 3 characters")
+        |> render("index.html", user: get_session(conn, "user"))
+      _ ->
+        room_id = UUID.uuid4()
+        user = %{
+          id: UUID.uuid4(),
+          name: name,
+          rooms: %{room_id => %{
+            owner: true,
+            share_link: Routes.room_path(conn, :join_room, room_id)
+          }},
+        }
 
-    conn
-    |> put_session("user", user)
-    |> redirect(to: "/room/live/#{room_id}")
+        conn
+        |> put_session("user", user)
+        |> redirect(to: "/room/live/#{room_id}")
+    end
   end
 
   def create(conn, _params) do
@@ -64,18 +75,29 @@ defmodule PokexWeb.RoomController do
 
   @spec join_room_create(Plug.Conn.t(), map) :: Plug.Conn.t()
   def join_room_create(conn, %{"id" => room_id, "room" => %{"name" => name}}) do
-    user = %{
-      id: UUID.uuid4(),
-      name: name,
-      rooms: %{room_id => %{
-        owner: false,
-        share_link: Routes.room_path(conn, :join_room, room_id)
-      }},
-    }
+    case String.length(name) do
+      0 ->
+        conn
+        |> put_flash(:error, "Name cannot be empty")
+        |> render("join.html", room_id: room_id, user: nil)
+      2 ->
+        conn
+        |> put_flash(:error, "Name cannot have less than 3 characters")
+        |> render("join.html", room_id: room_id, user: nil)
+      _ ->
+        user = %{
+          id: UUID.uuid4(),
+          name: name,
+          rooms: %{room_id => %{
+            owner: false,
+            share_link: Routes.room_path(conn, :join_room, room_id)
+          }},
+        }
 
-    conn
-    |> put_session("user", user)
-    |> redirect(to: "/room/live/#{room_id}")
+        conn
+        |> put_session("user", user)
+        |> redirect(to: "/room/live/#{room_id}")
+    end
   end
 
   def delete(conn, %{"id" => room_id}) do
