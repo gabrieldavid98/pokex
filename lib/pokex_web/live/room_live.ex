@@ -10,27 +10,32 @@ defmodule PokexWeb.RoomLive do
 
     if Map.has_key?(session, "user") do
       user = Map.get(session, "user")
-      current_room = Map.get(user.rooms, room_id) |> Map.put(:id, room_id)
-      user = Map.put(user, :is_current_room_owner?, current_room.owner)
-      assigns = %{
-        user: user,
-        current_room: current_room,
-        users: normalize_presence(Presence.list(room_id)),
-        fib: [1, 2, 3, 5, 8, 13, 21, 34, 55, 89],
-        vote: nil,
-        votes: %{},
-        users_who_voted: %{},
-      }
 
-      if connected?(socket) do
-        Phoenix.PubSub.subscribe(Pokex.PubSub, room_id, metadata: :room)
-        Phoenix.PubSub.subscribe(Pokex.PubSub, user.id, metadata: :user)
-        Presence.track(self(), room_id, user.id, %{name: user.name})
+      if Map.has_key?(user.rooms, room_id) do
+        current_room = Map.get(user.rooms, room_id) |> Map.put(:id, room_id)
+        user = Map.put(user, :is_current_room_owner?, current_room.owner)
+        assigns = %{
+          user: user,
+          current_room: current_room,
+          users: normalize_presence(Presence.list(room_id)),
+          fib: [1, 2, 3, 5, 8, 13, 21, 34, 55, 89],
+          vote: nil,
+          votes: %{},
+          users_who_voted: %{},
+        }
 
-        Phoenix.PubSub.broadcast(Pokex.PubSub, current_room.id, {:get_users_who_voted, user.id})
+        if connected?(socket) do
+          Phoenix.PubSub.subscribe(Pokex.PubSub, room_id, metadata: :room)
+          Phoenix.PubSub.subscribe(Pokex.PubSub, user.id, metadata: :user)
+          Presence.track(self(), room_id, user.id, %{name: user.name})
+
+          Phoenix.PubSub.broadcast(Pokex.PubSub, current_room.id, {:get_users_who_voted, user.id})
+        end
+
+        {:ok, assign(socket, assigns)}
+      else
+        {:ok, redirect(socket, to: "/rooms")}
       end
-
-      {:ok, assign(socket, assigns)}
     else
       {:ok, redirect(socket, to: "/join/room/#{room_id}")}
     end
