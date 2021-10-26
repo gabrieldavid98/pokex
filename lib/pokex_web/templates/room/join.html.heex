@@ -1,10 +1,10 @@
 <div class="text-center mt-5">
   <h1 class="text-light">Join a room</h1>
   <%= form_for :room, Routes.room_path(@conn, :join_room_create, @room_id), fn f -> %>
-    <%= text_input f, :name, placeholder: "Name", 
+    <%= text_input f, :name, placeholder: "Your Name", 
         class: "form-control bg-dark text-white", autocomplete: "off" %>
     <p class="lead mt-3">
-      <%= submit "+", class: "btn btn-lg btn-secondary fw-bold border-white bg-white text-dark" %>
+      <%= submit "Join", class: "btn btn-lg btn-secondary fw-bold border-white bg-white text-dark" %>
     </p>
   <% end %>
 </div>
