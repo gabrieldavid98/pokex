@@ -7,12 +7,15 @@
 # General application configuration
 import Config
 
+config :pokex,
+  ecto_repos: [Pokex.Repo]
+
 # Configures the endpoint
 config :pokex, PokexWeb.Endpoint,
   url: [host: "localhost"],
   render_errors: [view: PokexWeb.ErrorView, accepts: ~w(html json), layout: false],
   pubsub_server: Pokex.PubSub,
-  live_view: [signing_salt: "kK53Agug"]
+  live_view: [signing_salt: "gBDBPDKY"]
 
 # Configures the mailer
 #

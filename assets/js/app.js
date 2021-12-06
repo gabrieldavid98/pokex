@@ -47,3 +47,21 @@ const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-tog
 const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
   return new bootstrap.Tooltip(tooltipTriggerEl)
 })
+
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+if (location.pathname.startsWith('/room/live')) {
+  const textToCopyEl = document.getElementById('text-to-copy');
+  const textToCopy = textToCopyEl ? textToCopyEl.value : null;
+
+  document.getElementById('copy').onclick = async () => {
+    try {
+      await navigator.clipboard.writeText(textToCopy);
+      textToCopyEl.value = 'Copied!';
+      await sleep(1000);
+      textToCopyEl.value = textToCopy;
+    } catch (err) {
+      console.error(err);
+    }
+  }
+}

@@ -1,5 +1,14 @@
 import Config
 
+# Configure your database
+config :pokex, Pokex.Repo,
+  username: "postgres",
+  password: "postgres",
+  database: "pokex_dev",
+  hostname: "localhost",
+  show_sensitive_data_on_connection_error: true,
+  pool_size: 10
+
 # For development, we disable any cache and enable
 # debugging and code reloading.
 #
@@ -13,7 +22,7 @@ config :pokex, PokexWeb.Endpoint,
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
-  secret_key_base: "3wbS7KISUbMTC6aCTFHr/deAQStO3E+lHAqEd9oj+xb3mlNQ0ox47Ll5hl3+6Y70",
+  secret_key_base: "kYQsXNkEIZcgkJVUWzDeUmXvaa0HMdG5TAVwsBza96Z4ErdCqFj+YzHBr9nKm6ob",
   watchers: [
     # Start the esbuild watcher by calling Esbuild.install_and_run(:default, args)
     esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]}

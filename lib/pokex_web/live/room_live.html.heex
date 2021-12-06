@@ -1,39 +1,56 @@
-<div class="d-flex flex-row w-100">
-   <section 
-      class="d-flex flex-row flex-wrap flex-grow-1 me-3 justify-content-center p-2"
-      style="max-height: 40rem; height: auto;"
-   >
-      <%= for i <- @fib do %>
-         <div 
-            class={"rounded-custom shadow p-5 m-2 align-self-start text-light border #{if @vote === i, do: "border-danger", else: "border-primary"}"} 
-            style="width: 7rem; height: 8rem; cursor: pointer;"
-            phx-click="submit-vote"
-            phx-value-vote={i}
-         >
-            <h5><%= i %></h5>
-         </div>
-      <% end %>
-   </section>
-   <section class="d-flex flex-column" style="min-width: 17rem;">
-      <h5>Participants</h5>
-      <div class="overflow-auto" style="max-height: 40rem">
-         <%= for {id, %{name: name}} <- @users do %>
-            <div 
-               class={"shadow rounded-custom py-2 px-3 border border-#{if @users_who_voted[id], do: "success", else: "warning"}
-                         m-2 d-flex flex-row justify-content-between align-items-center"}
-               key={id}
-            >
-               <span><%= name %></span>
-               <span class="h6 m-0"><%= @votes[id] %></span>
-            </div>
-         <% end %>
+<%= if @active? do %>
+   <div class="input-group input-group-sm mb-3">
+      <input id="text-to-copy"
+             type="text"
+             class="form-control bg-dark text-white-50 border-secondary"
+             disabled="true"
+             value={"https://pokex.gigalixirapp.com#{@current_room.share_link}"}
+             aria-describedby="copy">
+      <div data-bs-toggle="tooltip" data-bs-placement="top" title="Share">
+         <button class="btn btn-outline-primary btn-sm" type="button" id="copy">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-share-fill" viewBox="0 0 16 16">
+               <path d="M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5z"/>
+            </svg>
+         </button>
       </div>
-      <%= if @user.is_current_room_owner? do %>
-         <div class="btn-group mt-3" role="group">
-            <button type="button" class="btn btn-primary" phx-click="show-results">Show results</button>
-            <button type="button" class="btn btn-primary" phx-click="reset">Reset</button>
+   </div>
+   <div class="d-flex flex-row w-100">
+      <section class="d-flex flex-column text-center">
+         <h5><%= @current_room.name %></h5>
+         <section 
+            class="d-flex flex-row flex-wrap flex-grow-1 me-3 justify-content-center"
+            style="max-height: 40rem; height: auto;"
+         >
+            <%= for i <- @fib do %>
+               <div 
+                  class={"rounded-custom shadow p-5 m-2 align-self-start text-light border #{if @vote === i, do: "border-danger", else: "border-primary"}"} 
+                  style="width: 7rem; height: 8rem; cursor: pointer;"
+                  phx-click="submit-vote"
+                  phx-value-vote={i}
+               >
+                  <h5><%= i %></h5>
+               </div>
+            <% end %>
+         </section>
+      </section>
+      <section class="d-flex flex-column" style="min-width: 17rem;">
+         <h5>Participants</h5>
+         <div class="overflow-auto" style="max-height: 40rem">
+            <%= for {id, %{name: name}} <- @users do %>
+               <div 
+                  class={"shadow rounded-custom py-2 px-3 border border-#{if @users_who_voted[id], do: "success", else: "warning"}
+                           m-2 d-flex flex-row justify-content-between align-items-center"}
+                  key={id}
+               >
+                  <span><%= name %></span>
+                  <span class="h6 m-0"><%= @votes[id] %></span>
+               </div>
+            <% end %>
          </div>
-      <% end %>
-   </section>
-</div>
-<div class="mt-5">Share link: https://pokex.gigalixirapp.com<%= @current_room.share_link %></div>
+         <%= if @user.is_current_room_owner? do %>
+            <button type="button" class="btn btn-success mt-2" phx-click="show-results">Show results</button>
+            <button type="button" class="btn btn-danger mt-2" phx-click="reset">Reset</button>
+         <% end %>
+      </section>
+   </div>
+<% end %>

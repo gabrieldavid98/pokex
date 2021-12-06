@@ -28,7 +28,9 @@ defmodule PokexWeb.ChannelCase do
     end
   end
 
-  setup _tags do
+  setup tags do
+    pid = Ecto.Adapters.SQL.Sandbox.start_owner!(Pokex.Repo, shared: not tags[:async])
+    on_exit(fn -> Ecto.Adapters.SQL.Sandbox.stop_owner(pid) end)
     :ok
   end
 end
