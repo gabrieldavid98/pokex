@@ -86,6 +86,18 @@ defmodule PokexWeb.RoomLive do
   end
 
   @impl true
+  def handle_event("remove-user", %{"id" => id}, socket) do
+    Logger.info("Handle event: remove-user")
+    Phoenix.PubSub.broadcast(
+      Pokex.PubSub,
+      id,
+      {:remove_user, socket.assigns.current_room.id}
+    )
+
+    {:noreply, socket}
+  end
+
+  @impl true
   def handle_info({:user_voted, user_id}, socket) do
     socket = update(
       socket,
@@ -160,6 +172,15 @@ defmodule PokexWeb.RoomLive do
       |> update(:active?, fn _ -> false end)
 
     {:noreply, socket}
+  end
+
+  @impl true
+  def handle_info({:remove_user, room_id}, socket) do
+    if socket.assigns.current_room.id == room_id do
+      {:noreply, redirect(socket, to: "/kick-out/#{room_id}")}
+    else
+      {:noreply, socket}
+    end
   end
 
   defp normalize_presence(data) do

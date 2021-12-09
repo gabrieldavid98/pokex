@@ -153,6 +153,21 @@ defmodule PokexWeb.RoomController do
     |> redirect(to: Routes.room_path(conn, :show))
   end
 
+  @spec kick_out(Plug.Conn.t(), map) :: Plug.Conn.t()
+  def kick_out(conn, %{"id" => room_id}) do
+    user = get_session(conn, "user")
+    unless user do
+      redirect(conn, to: Routes.room_path(conn, :index))
+    else
+      new_user = user |> Map.update!(:rooms, &Map.delete(&1, room_id))
+
+      conn
+      |> put_session("user", new_user)
+      |> put_flash(:error, "You have been kicked out from the room")
+      |> render("kick-out.html", user: new_user)
+    end
+  end
+
   defp add_room_to_user(conn, room_id, owner) do
     get_session(conn, "user")
     |> Map.update!(

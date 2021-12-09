@@ -28,6 +28,7 @@ defmodule PokexWeb.Router do
     get "/join/room/:id", RoomController, :join_room
     post "/join/room/:id", RoomController, :join_room_create
     delete "/rooms/:id", RoomController, :delete
+    get "/kick-out/:id", RoomController, :kick_out
 
     live "/room/live/:id", RoomLive
   end
